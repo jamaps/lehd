@@ -1,10 +1,13 @@
 # lehd
 
-A Python library for downloadidng [LEHD](https://lehd.ces.census.gov/data/) (Longitudinal Employer-Household Dynamics) data into Pandas DataFrames
+A Python library for downloading [LEHD](https://lehd.ces.census.gov/data/) (Longitudinal Employer-Household Dynamics) data into Pandas DataFrames
 
 ### How to use
 
 ```python
+import lehd
+import pandas as pd
+
 # downloading workplace data for Arizona (state ID = 44) and New Mexico () for 2016
 df = lehd.dl_lodes.wac(
     locations = ["44", "35"],
@@ -28,7 +31,7 @@ df = lehd.dl_lodes.od(
     origins = ["44001","44003","44005"]
     )
 
-# downloading OD from county 44001 to all other coutnies in Rhode Island
+# downloading OD from county 44001 to all other counties in Rhode Island
 df = lehd.dl_lodes.od(
     year = 2016,
     geography = "C",
@@ -40,7 +43,6 @@ df = lehd.dl_lodes.od(
 
 print(df)
 ```
-
 ```
   h_geoid_C w_geoid_C  S000  SA01  SA02  SA03  SE01  SE02  SE03  SI01  SI02  SI03
 0     44001     44001  5794  1310  2701  1783  1857  1992  1945  1045   559  4190
@@ -49,3 +51,32 @@ print(df)
 3     44001     44007  7557  1150  4100  2307  1227  1931  4399   602   960  5995
 4     44001     44009   694   184   315   195   183   191   320   119   149   426
 ```
+
+
+### Details
+
+```python
+def wac(locations, year = 2016, geography = "B", seg = "S000", type = "JT00"):
+```
+
+Downloads workplace characteristic data into a pandas dataframe
+
+#### Parameters
+
+`locations` | List of workplace locations to download data for, where locations are strings of GEOIDs. Must be specified
+
+`year` : int or str representing the year to download data for
+
+`geography` : The geographic scale in which to aggregate data to. The options are as follows:
+`"B"`  | blocks
+`"BG"` | block groups
+`"CT"` | census tracts
+`"P"`  | places
+`"CS"` | county subdivision
+`"C"`  | counties
+`"S"`  | states
+The default are blocks, which are how the raw data is provided, which thus does not require aggregation
+
+`seg` : Segment of the workforce, can have the values of “S000”, “SA01”, “SA02”, “SA03”, “SE01”, “SE02”, “SE03”, “SI01”, “SI02”, or “SI03”. Default is all workers. Please see https://lehd.ces.census.gov/data/lodes/LODES7/LODESTechDoc7.4.pdf for detail on the subset workforce segments
+
+`type` : From the LEHD documentation, this can have a value of "JT00" for All Jobs, "JT01" for Primary Jobs, "JT02" for All Private Jobs, "JT03" for Private Primary Jobs, "JT04" for All Federal Jobs, or "JT05" for Federal Primary Jobs.
