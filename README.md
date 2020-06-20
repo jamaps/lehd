@@ -88,13 +88,15 @@ Downloads workplace characteristic (WAC) data into a pandas dataframe
 `year` : int or str representing the year to download data for
 
 `geography` : The geographic scale in which to aggregate data to. The options are as follows:
-`"B"`  | blocks
-`"BG"` | block groups
-`"CT"` | census tracts
-`"P"`  | places
-`"CS"` | county subdivision
-`"C"`  | counties
-`"S"`  | states
+
+- `"B"`  | blocks
+- `"BG"` | block groups
+- `"CT"` | census tracts
+- `"P"`  | places
+- `"CS"` | county subdivision
+- `"C"`  | counties
+- `"S"`  | states
+
 The default are blocks, which are how the raw data is provided, which thus does not require aggregation
 
 `seg` : Segment of the workforce, can have the values of “S000”, “SA01”, “SA02”, “SA03”, “SE01”, “SE02”, “SE03”, “SI01”, “SI02”, or “SI03”. Default is all workers. Please see https://lehd.ces.census.gov/data/lodes/LODES7/LODESTechDoc7.4.pdf for detail on the subset workforce segments
@@ -120,13 +122,15 @@ Downloads residential characteristic (RAC) data into a pandas dataframe
 `year` : int or str representing the year to download data for
 
 `geography` : The geographic scale in which to aggregate data to. The options are as follows:
-`"B"`  | blocks
-`"BG"` | block groups
-`"CT"` | census tracts
-`"P"`  | places
-`"CS"` | county subdivision
-`"C"`  | counties
-`"S"`  | states
+
+- `"B"`  | blocks
+- `"BG"` | block groups
+- `"CT"` | census tracts
+- `"P"`  | places
+- `"CS"` | county subdivision
+- `"C"`  | counties
+- `"S"`  | states
+
 The default are blocks, which are how the raw data is provided, which thus does not require aggregation
 
 `seg` : Segment of the workforce, can have the values of “S000”, “SA01”, “SA02”, “SA03”, “SE01”, “SE02”, “SE03”, “SI01”, “SI02”, or “SI03”. Default is all workers. Please see https://lehd.ces.census.gov/data/lodes/LODES7/LODESTechDoc7.4.pdf for detail on the subset workforce segments
@@ -153,13 +157,15 @@ Downloads origin destination (OD) commuting flow data into a pandas dataframe
 `year` : int or str representing the year to download data for
 
 geography : The geographic scale in which to aggregate data to. The options are as follows:
-`"B"`  | blocks
-`"BG"` | block groups
-`"CT"` | census tracts
-`"P"`  | places
-`"CS"` | county subdivision
-`"C"`  | counties
-`"S"`  | states
+
+- `"B"`  | blocks
+- `"BG"` | block groups
+- `"CT"` | census tracts
+- `"P"`  | places
+- `"CS"` | county subdivision
+- `"C"`  | counties
+- `"S"`  | states
+
 the default are blocks, which are how the raw data is provided, which thus does not require aggregation
 
 `type` : from the LEHD documentation, this can have a value of "JT00" for All Jobs, "JT01" for Primary Jobs, "JT02" for All Private Jobs, "JT03" for Private Primary Jobs, "JT04" for All Federal Jobs, or "JT05" for Federal Primary Jobs.
