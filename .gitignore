@@ -1,1 +1,4 @@
 lehd/__pycache__/
+dist/
+build/
+lehd.egg-info/

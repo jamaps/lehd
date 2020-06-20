@@ -2,6 +2,12 @@
 
 A Python library for downloading [LEHD](https://lehd.ces.census.gov/data/) (Longitudinal Employer-Household Dynamics) data into Pandas DataFrames
 
+### install
+
+```
+pip install lehd
+```
+
 ### How to use
 
 ```python
