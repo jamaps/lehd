@@ -270,8 +270,8 @@ class dl_lodes:
         note: one of origins or destinations must be provided
 
         constrained : whether or not to only download data within a state
-        "no"   | download all data QQQQQ
         "yes"  | download only the data from the input origins, to the input destinations,
+        "no"   | download all data without OD constraints
 
         """
 
