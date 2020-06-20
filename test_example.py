@@ -34,4 +34,4 @@ df = lehd.dl_lodes.od(
     constrained = "yes"
     )
 
-print(df)
+print(df.head)

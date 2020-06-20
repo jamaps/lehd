@@ -6,7 +6,6 @@ A Python library for downloading [LEHD](https://lehd.ces.census.gov/data/) (Long
 
 ```python
 import lehd
-import pandas as pd
 
 # downloading workplace data for Arizona (state ID = 44)
 # and New Mexico () for 2016
@@ -45,9 +44,10 @@ df = lehd.dl_lodes.od(
     constrained = "yes"
     )
 
-print(df)
 ```
-```
+
+```python
+>>> df.head()
   h_geoid_C w_geoid_C  S000  SA01  SA02  SA03  SE01  SE02  SE03  SI01  SI02  SI03
 0     44001     44001  5794  1310  2701  1783  1857  1992  1945  1045   559  4190
 1     44001     44003  1524   323   811   390   350   416   758   150   390   984
@@ -57,9 +57,11 @@ print(df)
 ```
 
 
-### Details
+### Functions
 
 These are the details for the three main download functions for the three LODES data types (WAC, RAC, OD)
+
+***
 
 ```python
 lehd.dl_lodes.wac(
@@ -91,6 +93,7 @@ The default are blocks, which are how the raw data is provided, which thus does 
 
 `type` : From the LEHD documentation, this can have a value of "JT00" for All Jobs, "JT01" for Primary Jobs, "JT02" for All Private Jobs, "JT03" for Private Primary Jobs, "JT04" for All Federal Jobs, or "JT05" for Federal Primary Jobs.
 
+***
 
 ```python
 lehd.dl_lodes.rac(
@@ -121,6 +124,9 @@ The default are blocks, which are how the raw data is provided, which thus does 
 `seg` : Segment of the workforce, can have the values of “S000”, “SA01”, “SA02”, “SA03”, “SE01”, “SE02”, “SE03”, “SI01”, “SI02”, or “SI03”. Default is all workers. Please see https://lehd.ces.census.gov/data/lodes/LODES7/LODESTechDoc7.4.pdf for detail on the subset workforce segments
 
 `type` : From the LEHD documentation, this can have a value of "JT00" for All Jobs, "JT01" for Primary Jobs, "JT02" for All Private Jobs, "JT03" for Private Primary Jobs, "JT04" for All Federal Jobs, or "JT05" for Federal Primary Jobs.
+
+
+***
 
 ```python
 lehd.dl_lodes.od(

@@ -9,9 +9,9 @@ setuptools.setup(
     author="Jeff Allen",
     author_email="jeff.allen@utoronto.ca",
     description="a library for downloading LEHD data",
-    long_description="a library for downloading LEHD data",
+    long_description="a Python library for downloading LEHD data into pandas DataFrames",
     long_description_content_type="text/markdown",
-    url="https://github.com/jamaps/lehdpy",
+    url="https://github.com/jamaps/lehd",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
