@@ -1,6 +1,5 @@
 import pandas as pd
 
-
 class utils:
 
     def get_state_alpha(df, id):

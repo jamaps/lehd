@@ -15,18 +15,17 @@ pip install lehd
 ```python
 import lehd
 
-# downloading workplace data for Arizona (state ID = 44)
-# and New Mexico () for 2016
+# downloading workplace data for Arizona (state ID = 04) and New Mexico (state ID = 35) for 2016
 df = lehd.dl_lodes.wac(
-    locations = ["44", "35"],
+    locations = ["04", "35"],
     year = 2016
     )
 
-# downloading residential data for Arizona (state ID = 44)
+# downloading residential data for Arizona (state ID = 04)
 # for 2016, while also summarizing data by census tract,
 # only workforce type "SE01" ($1250 per month or less)
 df = lehd.dl_lodes.rac(
-    locations = ["44"],
+    locations = ["04"],
     year = 2016,
     geography = "CT",
     seg = "SE01"

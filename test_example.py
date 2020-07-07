@@ -1,5 +1,6 @@
 import lehd
 import pandas as pd
+import geopandas as gpd
 
 # downloading workplace data for Arizona (state ID = 44) and New Mexico () for 2016
 df = lehd.dl_lodes.wac(
@@ -34,4 +35,4 @@ df = lehd.dl_lodes.od(
     constrained = "yes"
     )
 
-print(df.head)
+print(df)

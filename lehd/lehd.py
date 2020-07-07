@@ -2,8 +2,344 @@
 
 import lehd
 import pandas as pd
+import geopandas as gpd
 import urllib.request
 import gzip
+from shapely import wkt
+
+class to_geo:
+
+    """
+    Takes downloaded LEHD data and converts it to GeoDataFrames which can be used for spatial analysis and visualization
+    """
+
+    def od(df):
+
+
+        gtype = lehd.utils.infer_geog_input(df[df.columns[0]][0])
+
+        if gtype == "B":
+
+            raise Exception('Joining to blocks is currently not supported')
+            return None
+
+        elif gtype == "BG":
+
+            df["state_o"] = df[df.columns[0]].str[:2]
+            df["state_d"] = df[df.columns[1]].str[:2]
+
+            states_for_dl = list(df["state_o"].unique())
+
+            gdfo = []
+
+            for state in states_for_dl:
+
+                dl_url = "https://www2.census.gov/geo/docs/reference/cenpop2010/blkgrp/CenPop2010_Mean_BG" + state + ".txt"
+
+                gdf = pd.read_csv(
+                    urllib.request.urlopen(dl_url),
+                    dtype={
+                        'TRACTCE': 'str',
+                        'BLKGRPCE': 'str',
+                        'COUNTYFP': 'str',
+                        'STATEFP': 'str'
+                    }, encoding="ISO-8859-1")
+
+                gdf["geoid"] = gdf["STATEFP"] + gdf["COUNTYFP"] + gdf["TRACTCE"] + gdf["BLKGRPCE"]
+                del gdf["STATEFP"], gdf["COUNTYFP"], gdf["TRACTCE"], gdf["BLKGRPCE"], gdf["POPULATION"]
+
+                gdfo.append(gdf)
+
+            gdf = pd.concat(gdfo)
+
+            # merge the output, and delete an excess ID column
+            df = pd.merge(df, gdf, how = "left", left_on = "h_geoid_BG", right_on = "geoid")
+            del df["geoid"]
+
+            df["LATITUDE"] = df["LATITUDE"].astype(str)
+            df["LONGITUDE"] = df["LONGITUDE"].astype(str)
+
+            df["geometry"] = "LINESTRING (" + df["LONGITUDE"] + " " +  df["LATITUDE"] + ","
+
+            del df["LATITUDE"], df["LONGITUDE"]
+
+
+            states_for_dl = list(df["state_d"].unique())
+
+            gdfo = []
+
+            for state in states_for_dl:
+
+                dl_url = "https://www2.census.gov/geo/docs/reference/cenpop2010/blkgrp/CenPop2010_Mean_BG" + state + ".txt"
+
+                gdf = pd.read_csv(
+                    urllib.request.urlopen(dl_url),
+                    dtype={
+                        'TRACTCE': 'str',
+                        'BLKGRPCE': 'str',
+                        'COUNTYFP': 'str',
+                        'STATEFP': 'str'
+                    }, encoding="ISO-8859-1")
+
+                gdf["geoid"] = gdf["STATEFP"] + gdf["COUNTYFP"] + gdf["TRACTCE"] + gdf["BLKGRPCE"]
+                del gdf["STATEFP"], gdf["COUNTYFP"], gdf["TRACTCE"], gdf["BLKGRPCE"], gdf["POPULATION"]
+
+                gdfo.append(gdf)
+
+            gdf = pd.concat(gdfo)
+
+            # merge the output, and delete an excess ID column
+            df = pd.merge(df, gdf, how = "left", left_on = "w_geoid_BG", right_on = "geoid")
+            del df["geoid"]
+
+            df["LATITUDE"] = df["LATITUDE"].astype(str)
+            df["LONGITUDE"] = df["LONGITUDE"].astype(str)
+
+            df["geometry"] = df["geometry"] + df["LONGITUDE"] + " " +  df["LATITUDE"] + ")"
+
+            del df["LATITUDE"], df["LONGITUDE"]
+
+            df['geometry'] = df['geometry'].apply(wkt.loads)
+            gdf = gpd.GeoDataFrame(df, geometry='geometry')
+
+
+
+
+        elif gtype == "CT":
+
+            df["state_o"] = df[df.columns[0]].str[:2]
+            df["state_d"] = df[df.columns[1]].str[:2]
+
+            states_for_dl = list(df["state_o"].unique())
+
+            gdfo = []
+
+            for state in states_for_dl:
+
+                dl_url = "https://www2.census.gov/geo/docs/reference/cenpop2010/tract/CenPop2010_Mean_TR" + state + ".txt"
+
+                gdf = pd.read_csv(
+                    urllib.request.urlopen(dl_url),
+                    dtype={
+                        'TRACTCE': 'str',
+                        'COUNTYFP': 'str',
+                        'STATEFP': 'str'
+                    }, encoding="ISO-8859-1")
+
+                gdf["geoid"] = gdf["STATEFP"] + gdf["COUNTYFP"] + gdf["TRACTCE"]
+                del gdf["STATEFP"], gdf["COUNTYFP"], gdf["TRACTCE"],  gdf["POPULATION"]
+
+                gdfo.append(gdf)
+
+            gdf = pd.concat(gdfo)
+
+            # merge the output, and delete an excess ID column
+            df = pd.merge(df, gdf, how = "left", left_on = df.columns[0], right_on = "geoid")
+            del df["geoid"]
+
+            df["LATITUDE"] = df["LATITUDE"].astype(str)
+            df["LONGITUDE"] = df["LONGITUDE"].astype(str)
+
+            df["geometry"] = "LINESTRING (" + df["LONGITUDE"] + " " +  df["LATITUDE"] + ","
+
+            del df["LATITUDE"], df["LONGITUDE"]
+
+
+            states_for_dl = list(df["state_d"].unique())
+
+            gdfo = []
+
+            for state in states_for_dl:
+
+                dl_url = "https://www2.census.gov/geo/docs/reference/cenpop2010/tract/CenPop2010_Mean_TR" + state + ".txt"
+
+                gdf = pd.read_csv(
+                    urllib.request.urlopen(dl_url),
+                    dtype={
+                        'TRACTCE': 'str',
+                        'COUNTYFP': 'str',
+                        'STATEFP': 'str'
+                    }, encoding="ISO-8859-1")
+
+                gdf["geoid"] = gdf["STATEFP"] + gdf["COUNTYFP"] + gdf["TRACTCE"]
+                del gdf["STATEFP"], gdf["COUNTYFP"], gdf["TRACTCE"], gdf["POPULATION"]
+
+                gdfo.append(gdf)
+
+            gdf = pd.concat(gdfo)
+
+            # merge the output, and delete an excess ID column
+            df = pd.merge(df, gdf, how = "left", left_on = df.columns[1], right_on = "geoid")
+            del df["geoid"]
+
+            df["LATITUDE"] = df["LATITUDE"].astype(str)
+            df["LONGITUDE"] = df["LONGITUDE"].astype(str)
+
+            df["geometry"] = df["geometry"] + df["LONGITUDE"] + " " +  df["LATITUDE"] + ")"
+
+            del df["LATITUDE"], df["LONGITUDE"]
+
+            df['geometry'] = df['geometry'].apply(wkt.loads)
+            gdf = gpd.GeoDataFrame(df, geometry='geometry')
+
+
+
+
+        return gdf
+
+
+
+
+    def wac(df, geo = "pts"):
+
+        """
+        df : input data frame from dl_lodes class
+
+        geo : str indicating to link data to points "pts" or polygons "poly". The default are "pts" since they take up less storage
+        """
+
+        df["state"] = df[df.columns[0]].str[:2]
+
+        states_for_dl = list(df["state"].unique())
+
+        gtype = lehd.utils.infer_geog_input(df[df.columns[0]][0])
+
+        if geo == "pts":
+
+            if gtype == "B":
+
+                raise Exception('Joining to blocks is currently not supported')
+                return None
+
+            elif gtype == "BG":
+
+                gdfo = []
+
+                for state in states_for_dl:
+
+                    dl_url = "https://www2.census.gov/geo/docs/reference/cenpop2010/blkgrp/CenPop2010_Mean_BG" + state + ".txt"
+
+                    #print(dl_url)
+
+                    gdf = pd.read_csv(
+                        urllib.request.urlopen(dl_url),
+                        dtype={
+                            'TRACTCE': 'str',
+                            'BLKGRPCE': 'str',
+                            'COUNTYFP': 'str',
+                            'STATEFP': 'str'
+                        }, encoding="ISO-8859-1")
+
+                    gdf["geoid"] = gdf["STATEFP"] + gdf["COUNTYFP"] + gdf["TRACTCE"] + gdf["BLKGRPCE"]
+                    del gdf["STATEFP"], gdf["COUNTYFP"], gdf["TRACTCE"], gdf["BLKGRPCE"], gdf["POPULATION"]
+
+                    gdf = gpd.GeoDataFrame(gdf, geometry=gpd.points_from_xy(x=gdf.LONGITUDE, y=gdf.LATITUDE))
+
+                    del gdf["LATITUDE"], gdf["LONGITUDE"]
+
+                    gdfo.append(gdf)
+
+                gdf = pd.concat(gdfo)
+
+            elif gtype == "CT":
+
+                gdfo = []
+
+                for state in states_for_dl:
+
+                    dl_url = "https://www2.census.gov/geo/docs/reference/cenpop2010/tract/CenPop2010_Mean_TR" + state + ".txt"
+
+                    print(dl_url)
+
+                    gdf = pd.read_csv(
+                        urllib.request.urlopen(dl_url),
+                        dtype={
+                            'TRACTCE': 'str',
+                            'COUNTYFP': 'str',
+                            'STATEFP': 'str'
+                        }, encoding="ISO-8859-1")
+
+                    gdf["geoid"] = gdf["STATEFP"] + gdf["COUNTYFP"] + gdf["TRACTCE"]
+                    del gdf["STATEFP"], gdf["COUNTYFP"], gdf["TRACTCE"], gdf["POPULATION"]
+
+                    gdf = gpd.GeoDataFrame(gdf, geometry=gpd.points_from_xy(x=gdf.LONGITUDE, y=gdf.LATITUDE))
+
+                    del gdf["LATITUDE"], gdf["LONGITUDE"]
+
+                    gdfo.append(gdf)
+
+                gdf = pd.concat(gdfo)
+
+            elif gtype == "C":
+
+                gdfo = []
+
+                for state in states_for_dl:
+
+                    dl_url = "https://www2.census.gov/geo/docs/reference/cenpop2010/county/CenPop2010_Mean_CO" + state + ".txt"
+
+                    print(dl_url)
+
+                    gdf = pd.read_csv(
+                        urllib.request.urlopen(dl_url),
+                        dtype={
+                            'COUNTYFP': 'str',
+                            'STATEFP': 'str'
+                        }, encoding="ISO-8859-1")
+
+                    gdf["geoid"] = gdf["STATEFP"] + gdf["COUNTYFP"]
+                    del gdf["STATEFP"], gdf["COUNTYFP"], gdf["POPULATION"],
+
+                    gdf = gpd.GeoDataFrame(gdf, geometry=gpd.points_from_xy(x=gdf.LONGITUDE, y=gdf.LATITUDE))
+
+                    del gdf["LATITUDE"], gdf["LONGITUDE"]
+
+                    gdfo.append(gdf)
+
+                gdf = pd.concat(gdfo)
+
+            elif gtype == "S":
+
+
+                dl_url = "https://www2.census.gov/geo/docs/reference/cenpop2010/CenPop2010_Mean_ST.txt"
+
+                print(dl_url)
+
+                gdf = pd.read_csv(
+                    urllib.request.urlopen(dl_url),
+                    dtype={
+                        'STATEFP': 'str'
+                    }, encoding="ISO-8859-1")
+
+                gdf["geoid"] = gdf["STATEFP"]
+                del gdf["STATEFP"], gdf["POPULATION"],
+
+                gdf = gpd.GeoDataFrame(gdf, geometry=gpd.points_from_xy(x=gdf.LONGITUDE, y=gdf.LATITUDE))
+
+                del gdf["LATITUDE"], gdf["LONGITUDE"]
+
+            else:
+
+                raise Exception('Only states ("S"), counties ("C"), census tracts ("CT"), block groups ("BG"), and blocks ("B") are supported for joining to point coodrinates')
+                return None
+
+            # merge the output, and delete an excess ID column
+            gdf = pd.merge(gdf, df, how = "right", right_on = df.columns[0], left_on = "geoid")
+            del gdf["geoid"]
+
+        elif geo == "poly":
+
+            raise Exception('Joining to polygons is currently not supported')
+            return None
+
+        else:
+
+            raise Exception('Please make sure the input parameter @geo is one of ["pts","poly"]')
+            return None
+
+        return gdf
+
+    rac = wac
 
 
 class dl_lodes:
